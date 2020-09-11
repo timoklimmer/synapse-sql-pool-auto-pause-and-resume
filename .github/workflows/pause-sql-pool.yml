@@ -1,0 +1,36 @@
+name: 'Pause SQL Pool'
+
+on:
+  workflow_dispatch:
+
+  # uncomment to activate schedule
+  # schedule:
+  #   # notes: - due to the syntax of YAML, the cron schedule expression has to be written within ''
+  #   #        - https://crontab.guru can help with writing cron schedule expressions
+  #   #        - timezone for expression below is UTC (Germany is 1-2 hours later depending on summer time)
+  #   - cron: '0 20 * * MON-FRI'
+
+env:
+  RESOURCE_GROUP: ${{ secrets.RESOURCE_GROUP }}
+  SYNAPSE_WORKSPACE_NAME: ${{ secrets.SYNAPSE_WORKSPACE_NAME }}
+  SQL_POOL_NAME: ${{ secrets.SQL_POOL_NAME }}
+
+jobs:
+
+  pause-sql-pool:
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    
+    - name: Pause SQL Pool
+      uses: azure/CLI@v1
+      with:
+        azcliversion: 2.11.1
+        inlineScript: |
+          if [ "$(az synapse sql pool show --name $SQL_POOL_NAME --resource-group $RESOURCE_GROUP --workspace-name $SYNAPSE_WORKSPACE_NAME --query "status" -o tsv)" = "Online" ]; then
+            az synapse sql pool pause --name $SQL_POOL_NAME --workspace-name $SYNAPSE_WORKSPACE_NAME --resource-group $RESOURCE_GROUP
+          fi
