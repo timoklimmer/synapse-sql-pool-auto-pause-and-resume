@@ -22,7 +22,7 @@ env:
 jobs:
 
   pause-sql-pool:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-16.04
     steps:
     
     - name: Login to Azure
