@@ -6,7 +6,7 @@
 This sample shows how to auto-pause and resume a Synapse SQL Pool using Github Actions according to a specified
 schedule.
 
-To use, clone this repo and configure the secrets in your GitHub repo as follows AND update the workflow files as
+To use, clone this repo AND configure the secrets in your GitHub repo as follows AND update the workflow files as
 described below to activate schedules.
 
 | Secret Name             | Content                                              |
@@ -15,6 +15,11 @@ described below to activate schedules.
 | SYNAPSE_WORKSPACE_NAME  | The name of the Synapse workspace.                   | 
 | SQL_POOL_NAME           | The name of the SQL Pool.                            |
 | AZURE_CREDENTIALS       | Describes the service principal used for resuming/pausing the SQL Pool.<br/>See the included [azure-sp-credentials.sample.json](azure-sp-credentials.sample.json) file for an example. |
+| SQL_SERVER_ENDPOINT     | Server endpoint of the SQL Pool.                     |
+| SQL_DATABASE            | SQL Pool database name.                              |
+| SQL_USER                | Name of a SQL user which can check if the script can pause. See [can_pause.sql](can_pause.sql) for details.|
+| SQL_PASSWORD            | Password for the SQL user above.                     |
+
 
 Pause/resume schedules can be modified/activated by editing and committing the respective cron schedule expressions in
 the included `pause-sql-pool.yml` and/or `resume-sql-pool.yml` files in folder `.github/workflows`.
