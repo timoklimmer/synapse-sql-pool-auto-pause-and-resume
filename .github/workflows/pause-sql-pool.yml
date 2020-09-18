@@ -45,8 +45,12 @@ jobs:
       with:
         azcliversion: 2.11.1
         inlineScript: |
+          set -e
           echo "Path"
           echo $PATH
+
+          ls /opt/mssql-tools/bin
+
           # if SQL Pool is online
           if [ "$(az synapse sql pool show --name "$SQL_POOL_NAME" --workspace-name "$SYNAPSE_WORKSPACE_NAME" \
                   --resource-group "$RESOURCE_GROUP" --query "status" -o tsv)" = "Online" ]; then
