@@ -22,7 +22,7 @@ env:
 jobs:
 
   pause-sql-pool:
-    runs-on: ubuntu-16.04
+    runs-on: ubuntu-18.04
     steps:
     
     - name: Login to Azure
@@ -41,6 +41,11 @@ jobs:
             echo "SQL Pool is online."
             
             # ...and can be paused:
+            curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+            curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
+            sudo apt-get update
+            sudo apt-get -y install mssql-tools unixodbc-dev
+            export PATH="$PATH:/opt/mssql-tools/bin"
             if [ "$(sqlcmd -S "$SQL_SERVER_ENDPOINT" -d "$SQL_DATABASE" -U "$SQL_USER" -P "$SQL_PASSWORD" -I \
                   -i "$GITHUB_WORKSPACE/can_pause.sql" -h -1 -W)" = "1" ]; then
               echo "SQL Pool can be paused."
