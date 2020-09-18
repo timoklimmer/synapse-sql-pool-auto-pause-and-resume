@@ -22,20 +22,23 @@ env:
 jobs:
 
   pause-sql-pool:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
 
-    - name: Install Azure CLI and sqlcmd
-      run: |
-        curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-        curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-        curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
-        sudo apt-get update 
-        sudo apt-get install mssql-tools unixodbc-dev
-        echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
-        echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
-        source ~/.bashrc
+    # - name: Install Azure CLI and sqlcmd
+    #   run: |
+    #     curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+    #     curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+    #     curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
+    #     sudo apt-get update 
+    #     sudo apt-get install mssql-tools unixodbc-dev
+    #     echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
+    #     echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+    #     source ~/.bashrc
     
+    - name: Download sources
+      uses: actions/checkout@v1
+
     - name: Login to Azure
       uses: azure/login@v1
       with:
@@ -44,10 +47,6 @@ jobs:
     - name: Pause SQL Pool
       run: |
           set -e
-          echo "Path"
-          echo $PATH
-
-          ls /opt/mssql-tools/bin
 
           # if SQL Pool is online
           if [ "$(az synapse sql pool show --name "$SQL_POOL_NAME" --workspace-name "$SYNAPSE_WORKSPACE_NAME" \
@@ -55,8 +54,9 @@ jobs:
             echo "SQL Pool is online."
             
             # ...and can be paused:
-            if [ "$(sqlcmd -S "$SQL_SERVER_ENDPOINT" -d "$SQL_DATABASE" -U "$SQL_USER" -P "$SQL_PASSWORD" -I \
-                  -i "$GITHUB_WORKSPACE/can_pause.sql" -h -1 -W)" = "1" ]; then
+            can_pause = "$(sqlcmd -S "$SQL_SERVER_ENDPOINT" -d "$SQL_DATABASE" -U "$SQL_USER" -P "$SQL_PASSWORD" -I \
+                              -i "$GITHUB_WORKSPACE/can_pause.sql" -h -1 -W)"
+            if [ $can_pause = "1" ]; then
               echo "SQL Pool can be paused."
               
               # pause it
