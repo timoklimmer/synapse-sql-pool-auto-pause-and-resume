@@ -43,7 +43,8 @@ jobs:
             # ...and can be paused:
             curl https://packages.microsoft.com/keys/microsoft.asc -o gpg.keys
             sudo apt-key add gpg.keys
-            curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list -o /etc/apt/sources.list.d/msprod.list
+            curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list -o msprod.list
+            sudo mv msprod.list /etc/apt/sources.list.d/msprod.list
             sudo apt-get update
             sudo apt-get -y install mssql-tools unixodbc-dev
             export PATH="$PATH:/opt/mssql-tools/bin"
