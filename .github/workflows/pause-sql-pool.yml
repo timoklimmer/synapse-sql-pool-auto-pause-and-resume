@@ -54,7 +54,7 @@ jobs:
             echo "SQL Pool is online."
             
             # ...and can be paused:
-            can_pause = "$(sqlcmd -S "$SQL_SERVER_ENDPOINT" -d "$SQL_DATABASE" -U "$SQL_USER" -P "$SQL_PASSWORD" -I \
+            can_pause="$(sqlcmd -S "$SQL_SERVER_ENDPOINT" -d "$SQL_DATABASE" -U "$SQL_USER" -P "$SQL_PASSWORD" -I \
                               -i "$GITHUB_WORKSPACE/can_pause.sql" -h -1 -W)"
             if [ $can_pause = "1" ]; then
               echo "SQL Pool can be paused."
