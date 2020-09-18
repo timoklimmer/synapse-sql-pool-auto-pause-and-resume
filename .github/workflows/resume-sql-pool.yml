@@ -31,6 +31,12 @@ jobs:
       with:
         azcliversion: 2.11.1
         inlineScript: |
-          if [ "$(az synapse sql pool show --name $SQL_POOL_NAME --resource-group $RESOURCE_GROUP --workspace-name $SYNAPSE_WORKSPACE_NAME --query "status" -o tsv)" = "Paused" ]; then
-            az synapse sql pool resume --name $SQL_POOL_NAME --workspace-name $SYNAPSE_WORKSPACE_NAME --resource-group $RESOURCE_GROUP
+          # if SQL Pool is paused
+          if [ "$(az synapse sql pool show --name "$SQL_POOL_NAME" --workspace-name "$SYNAPSE_WORKSPACE_NAME" \
+                  --resource-group "$RESOURCE_GROUP" --query "status" -o tsv)" = "Paused" ]; then
+            echo "SQL Pool is paused."
+              # resume it
+              echo "Resuming SQL Pool..."
+              az synapse sql pool resume --name "$SQL_POOL_NAME" --workspace-name "$SYNAPSE_WORKSPACE_NAME" \
+                  --resource-group "$RESOURCE_GROUP"
           fi
