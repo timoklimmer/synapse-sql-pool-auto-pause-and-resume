@@ -41,10 +41,9 @@ jobs:
             echo "SQL Pool is online."
             
             # ...and can be paused:
-            echo "Line 44"
-            curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
-            echo "Line 46"
-            curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list | sudo tee /etc/apt/sources.list.d/msprod.list
+            sudo curl https://packages.microsoft.com/keys/microsoft.asc -o gpg.keys
+            sudo apt-key add gpg.keys
+            sudo curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list -o /etc/apt/sources.list.d/msprod.list
             sudo apt-get update
             sudo apt-get -y install mssql-tools unixodbc-dev
             export PATH="$PATH:/opt/mssql-tools/bin"
