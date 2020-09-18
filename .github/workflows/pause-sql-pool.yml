@@ -44,7 +44,7 @@ jobs:
             echo "Line 44"
             curl https://packages.microsoft.com/keys/microsoft.asc -o gpg.keys
             echo "Line 46"
-            sudo apt-key add gpg.keys
+            apt-key add gpg.keys
             echo "Line 48"
             curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list -o msprod.list
             echo "Line 50"
